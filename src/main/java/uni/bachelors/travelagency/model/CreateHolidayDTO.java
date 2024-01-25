@@ -1,19 +1,20 @@
 package uni.bachelors.travelagency.model;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public class CreateHolidayDTO {
 
     private Long location;
     private String title;
-    private Date startDate;
+    private LocalDate startDate;
     private Integer duration;
     private String price;
     private Integer freeSlots;
 
     public CreateHolidayDTO() {}
 
-    public CreateHolidayDTO(Long location, String title, Date startDate, Integer duration, String price, Integer freeSlots) {
+    public CreateHolidayDTO(Long location, String title, LocalDate startDate, Integer duration, String price, Integer freeSlots) {
         this.location = location;
         this.title = title;
         this.startDate = startDate;
@@ -38,11 +39,11 @@ public class CreateHolidayDTO {
         this.title = title;
     }
 
-    public Date getStartDate() {
+    public LocalDate getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
     }
 

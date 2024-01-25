@@ -11,6 +11,12 @@ import uni.bachelors.travelagency.model.UpdateHolidayDTO;
 import uni.bachelors.travelagency.repository.HolidayRepository;
 import uni.bachelors.travelagency.repository.LocationRepository;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @RestController
@@ -23,8 +29,49 @@ public class HolidayController {
     @Autowired
     private LocationRepository locationRepository;
 
+    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+
     @GetMapping
-    public ResponseEntity<List<ResponseHolidayDTO>> getAllHolidays() {
+    public ResponseEntity<List<ResponseHolidayDTO>> getHolidayByFilter(@RequestParam(required = false) String location,
+                                                                       @RequestParam(required = false) String duration,
+                                                                       @RequestParam(required = false) String startDate)
+    {
+        if (location == null && duration == null && startDate == null)
+            return getAllHolidays();
+
+        String locationStr = null;
+        if (location != null)
+            locationStr = URLDecoder.decode(location, StandardCharsets.UTF_8);
+
+        Integer durationInt = null;
+        if (duration != null)
+            try {
+                durationInt = Integer.parseInt(duration);
+            } catch (NumberFormatException e) {
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
+        LocalDate startDateDate = null;
+        if (startDate != null)
+            try {
+                startDateDate = LocalDate.parse(startDate, dateFormatter);
+            } catch (Exception e) {
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
+        try {
+            List<Long> locationIdList = null;
+            if (locationStr != null)
+                locationIdList = locationRepository.findIdByCityOrCountry(locationStr);
+            List<ResponseHolidayDTO> holidayList = holidayRepository.findByFilter(locationIdList, startDateDate, durationInt);
+            return new ResponseEntity<>(holidayList, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    private ResponseEntity<List<ResponseHolidayDTO>> getAllHolidays() {
         try {
             List<ResponseHolidayDTO> holidays = new ArrayList<>();
             holidayRepository.findAll().forEach(holidays::add);

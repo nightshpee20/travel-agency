@@ -2,6 +2,7 @@ package uni.bachelors.travelagency.model;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -15,14 +16,14 @@ public class ResponseHolidayDTO {
     @JoinColumn
     private ResponseLocationDTO location;
     private String title;
-    private Date startDate;
+    private LocalDate startDate;
     private Integer duration;
     private Double price;
     private Integer freeSlots;
 
     public ResponseHolidayDTO() {}
 
-    public ResponseHolidayDTO(Long id, ResponseLocationDTO location, String title, Date startDate, Integer duration, Double price, Integer freeSlots) {
+    public ResponseHolidayDTO(Long id, ResponseLocationDTO location, String title, LocalDate startDate, Integer duration, Double price, Integer freeSlots) {
         this.id = id;
         this.location = location;
         this.title = title;
@@ -56,11 +57,11 @@ public class ResponseHolidayDTO {
         this.title = title;
     }
 
-    public Date getStartDate() {
+    public LocalDate getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
     }
 
